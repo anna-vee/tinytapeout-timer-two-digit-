@@ -10,7 +10,7 @@
  */
 `default_nettype none
 
-module tt_anna_vee (
+module tt_um_anna_vee (
     input  wire [7:0] ui_in,
     output wire [7:0] uo_out,
     input  wire [7:0] uio_in,
