@@ -8,13 +8,9 @@ You can also include images in this folder and reference them in the markdown. E
 -->
 
 ## How it works
-
-Two digit timer
-
+Once the switch is flipped, the display decreases by 1 with every 6000000 ticks of the 100khz clock, or 1 minute, until it reaches 0. 
 ## How to test
-
-Press button until desired number of minutes, flip the switch, wait till it reachs 0. 
-
+Access The Wokwi Simulation With This Link: https://wokwi.com/projects/455966163101749249
+Make sure the switch is turned off. Then press the button until the display shows the desired number of minutes you want to time. Then flip the switch and watch it count down to 0! 
 ## External hardware
-
-2+ digit seven seg display, button, switch
+The circuit uses a 2+ digit common cathode seven seg display, a button, and a 3 pin switch. 
