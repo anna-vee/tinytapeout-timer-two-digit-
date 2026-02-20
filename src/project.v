@@ -1,27 +1,104 @@
 /*
- * Copyright (c) 2024 Your Name
+ * Copyright (c) 2024 ANNA V
  * SPDX-License-Identifier: Apache-2.0
  */
 
+
+/*
+ * Copyright (c) 2024 Anna V
+ * SPDX-License-Identifier: Apache-2.0
+ */
 `default_nettype none
 
 module tt_um_example (
-    input  wire [7:0] ui_in,    // Dedicated inputs
-    output wire [7:0] uo_out,   // Dedicated outputs
-    input  wire [7:0] uio_in,   // IOs: Input path
-    output wire [7:0] uio_out,  // IOs: Output path
-    output wire [7:0] uio_oe,   // IOs: Enable path (active high: 0=input, 1=output)
-    input  wire       ena,      // always 1 when the design is powered, so you can ignore it
-    input  wire       clk,      // clock
-    input  wire       rst_n     // reset_n - low to reset
+    input  wire [7:0] ui_in,
+    output wire [7:0] uo_out,
+    input  wire [7:0] uio_in,
+    output wire [7:0] uio_out,
+    output wire [7:0] uio_oe,
+    input  wire       ena,
+    input  wire       clk,
+    input  wire       rst_n
 );
 
-  // All output pins must be assigned. If not used, assign to 0.
-  assign uo_out  = ui_in + uio_in;  // Example: ou_out is the sum of ui_in and uio_in
-  assign uio_out = 0;
-  assign uio_oe  = 0;
+  wire button = ui_in[1];
+  wire switch = ui_in[2];
 
-  // List all unused inputs to prevent warnings
-  wire _unused = &{ena, clk, rst_n, 1'b0};
+  reg a, b, c, d, e, f, g, dig1, dig2;
+  assign uo_out  = {1'b0, g, f, e, d, c, b, a};
+  assign uio_out = {6'b0, dig2, dig1};
+  assign uio_oe  = 8'b00000011;
+
+  reg [3:0] ones = 0;
+  reg [3:0] tens = 0;
+  reg button_prev = 0;
+  reg [9:0] muxswitch = 0;
+  reg mux = 0;
+  reg [22:0] seconds = 0;
+
+  always @(posedge clk) begin
+    button_prev <= button;
+    if (button && !button_prev) begin
+      if (ones == 9) begin
+        ones <= 0;
+        if (tens == 9)
+          tens <= 0;
+        else
+          tens <= tens + 1;
+      end else begin
+        ones <= ones + 1;
+      end
+    end
+    muxswitch <= muxswitch + 1;
+    if (muxswitch == 0)
+      mux <= ~mux;
+    if (switch) begin
+      seconds <= seconds + 1;
+      if (seconds == 6000000) begin
+        seconds <= 0;
+        if (ones == 0) begin
+          if (tens > 0) begin
+            tens <= tens - 1;
+            ones <= 9;
+          end
+        end else begin
+          ones <= ones - 1;
+        end
+      end
+    end else begin
+      seconds <= 0;
+    end
+  end
+
+  function [6:0] seg7;
+    input [3:0] digit;
+    begin
+      case (digit)
+        0: seg7 = 7'b1111110;
+        1: seg7 = 7'b0110000;
+        2: seg7 = 7'b1101101;
+        3: seg7 = 7'b1111001;
+        4: seg7 = 7'b0110011;
+        5: seg7 = 7'b1011011;
+        6: seg7 = 7'b1011111;
+        7: seg7 = 7'b1110000;
+        8: seg7 = 7'b1111111;
+        9: seg7 = 7'b1111011;
+        default: seg7 = 7'b0000000;
+      endcase
+    end
+  endfunction
+
+  always @(*) begin
+    if (mux == 0) begin
+      {a,b,c,d,e,f,g} = seg7(ones);
+      dig1 = 1;
+      dig2 = 0;
+    end else begin
+      {a,b,c,d,e,f,g} = seg7(tens);
+      dig1 = 0;
+      dig2 = 1;
+    end
+  end
 
 endmodule
