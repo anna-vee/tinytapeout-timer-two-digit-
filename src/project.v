@@ -36,8 +36,8 @@ module tt_um_anna_vee (
   always @(posedge clk) begin
     button_prev <= button_stable;
 
-    if (button == 1'b1) begin
-      if (debounce_cnt == 10'd999)
+    if (button == 1) begin
+      if (debounce_cnt == 999)
         button_stable <= 1;
       else
         debounce_cnt <= debounce_cnt + 1;
