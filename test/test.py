@@ -25,8 +25,7 @@ async def test_project(dut):
     await ClockCycles(dut.clk, 1200)
     dut.ui_in.value = 0
     await ClockCycles(dut.clk, 50)
-
-    assert int(dut.ones.value) == 1, f"Expected ones=1, got {int(dut.ones.value)}"
+    assert int(dut.user_project.ones.value) == 1, f"Expected ones=1, got {int(dut.user_project.ones.value)}"
     dut._log.info("Test passed")
 
     # Set the input values you want to test
