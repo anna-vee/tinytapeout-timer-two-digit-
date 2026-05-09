@@ -29,5 +29,5 @@ async def test_project(dut):
     # wait for mux to show ones digit
     await ClockCycles(dut.clk, MUX_PERIOD * 2)
     seg = int(dut.uo_out.value) & 0x7F
-    assert seg == 0b0110000, f"Expected digit 1 on display, got {seg:07b}"
+    assert seg == 0b0000110, f"Expected digit 1 on display, got {seg:07b}"
     dut._log.info("Test passed")
